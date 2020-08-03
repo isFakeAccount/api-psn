@@ -14,7 +14,7 @@ require 'irb/completion'
 require 'psn-api'
 
 def reload!
-  files = $LOADED_FEATURES.select { |feat| feat =~ /\/psn\// }
+  files = $LOADED_FEATURES.select { |feat| feat =~ /\/play_station_network_api\// }
   files.each { |file| load file }
 end
 

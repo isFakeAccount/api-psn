@@ -1,4 +1,4 @@
-module PSN
+module PlayStationNetworkAPI
   class Game
     attr_accessor :token, :title_id
 
@@ -6,16 +6,16 @@ module PSN
     TROPHY_ENDPOINT ||= 'https://us-tpy.np.community.playstation.net/trophy/v1/'
 
     def initialize(title_id)
-      @token = PSN::Client.new().login
+      @token = PlayStationNetworkAPI::Client.new().login
       @title_id = title_id
     end
 
     def details
     end
 
-    def trophy_info
+    def trophy_info(identity = nil)
       if title_id.start_with?('CU')
-        request = PSN::Client.new(base_uri: TROPHY_ENDPOINT)
+        request = PlayStationNetworkAPI::Client.new(base_uri: TROPHY_ENDPOINT)
           .get("/apps/trophyTitles", headers: { 'Authorization': "Bearer #{ token }" },
             query: {
               npTitleIds: title_id,
@@ -26,14 +26,21 @@ module PSN
 
         @title_id = request.dig('apps', 0, 'trophyTitles', 0, 'npCommunicationId')
 
-        warn "Please save the new 'titleId' : #{ title_id } and use this on your next request. PSN::Game.new('#{ title_id }').trophy_info"
+        warn "Please save the new 'titleId' : #{ title_id } and use this on your next request. PlayStationNetworkAPI::Game.new('#{ title_id }').trophy_info"
       end
 
-      request = PSN::Client.new(base_uri: TROPHY_ENDPOINT)
+      params = {}
+
+      if identity
+        params[:comparedUser] = 'pacMakaveli90'
+      end
+
+      request = PlayStationNetworkAPI::Client.new(base_uri: TROPHY_ENDPOINT)
         .get("/trophyTitles/#{ title_id }", headers: { 'Authorization': "Bearer #{ token }" },
           query: {
-            npLanguage: 'en'
-          }
+            # platform: 'PS3',
+            npLanguage: 'en',
+          }.merge(params)
         )
 
       request.parsed_response
@@ -48,7 +55,7 @@ module PSN
     end
 
     def players
-      request = PSN::Client.new(base_uri: GAME_ENDPOINT)
+      request = PlayStationNetworkAPI::Client.new(base_uri: GAME_ENDPOINT)
         .get("/titles/#{ title_id }/players", headers: { 'Authorization': "Bearer #{ token }" })
 
       request.parsed_response
@@ -74,7 +81,7 @@ module PSN
         params[:comparedUser] = identity
       end
 
-      request = PSN::Client.new(base_uri: TROPHY_ENDPOINT)
+      request = PlayStationNetworkAPI::Client.new(base_uri: TROPHY_ENDPOINT)
         .get(url, headers: { 'Authorization': "Bearer #{ token }" },
           query: {
             iconSize: 'm', # [s, m]
