@@ -1,5 +1,3 @@
-# require 'pry'
-
 module PlayStationNetworkAPI
   class Client
     include HTTParty
