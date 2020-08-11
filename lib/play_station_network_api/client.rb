@@ -1,4 +1,4 @@
-require 'pry'
+# require 'pry'
 
 module PlayStationNetworkAPI
   class Client
