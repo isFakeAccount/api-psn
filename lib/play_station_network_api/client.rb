@@ -26,8 +26,8 @@ module PlayStationNetworkAPI
 
     attr_accessor :token
 
-    def initialize(token = 'b14e6477-e17a-40bb-8baf-c2dd906d6534', base_uri: 'https://auth.api.sonyentertainmentnetwork.com/2.0')
-      @token = token
+    def initialize(refresh_token = nil, base_uri: 'https://auth.api.sonyentertainmentnetwork.com/2.0')
+      @token = refresh_token
 
       self.class.default_options.update(base_uri: base_uri)
     end
@@ -36,7 +36,7 @@ module PlayStationNetworkAPI
       self.class.get(url, options)
     end
 
-    def login_with(npsso = 'd8Z7uBGbKHXxutvAE3LtJdc4fmZdvQm8NXAdtQQEtexcLZ9d8zSFxvRhuwpEBe4J')
+    def login_with(npsso)
       response = self.class.post('/oauth/token',
         headers: {
           'User-Agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1',
@@ -56,23 +56,24 @@ module PlayStationNetworkAPI
     # first time login, or the Refresh Token.
     #
     def login
+      puts token
       response = self.class.post('/oauth/token',
         headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
         },
 
         body: {
-          "app_context" => "inapp_ios",
-          "client_id" => CLIENT_ID,
-          "client_secret" => CLIENT_SECRET,
-          "refresh_token" => token,
-          "duid" => '0000000d00040080027BC1C3FBB84112BFC9A4300A78E96A',
-          "grant_type" => "refresh_token",
-          "scope" => SCOPE.join(' ')
+          'app_context' => 'inapp_ios',
+          'client_id' => CLIENT_ID,
+          'client_secret' => CLIENT_SECRET,
+          'refresh_token' => token,
+          'duid' => '0000000d00040080027BC1C3FBB84112BFC9A4300A78E96A',
+          'grant_type' => 'refresh_token',
+          'scope' => SCOPE.join(' ')
         }
       )
 
-      response['access_token']
+      return response['access_token']
     end
   end
 end

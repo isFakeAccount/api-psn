@@ -7,8 +7,8 @@ module PlayStationNetworkAPI
     ACTIVITY_ENDPOINT  ||= 'https://activity.api.np.km.playstation.net/activity/api/v2/users/%s/'
     GAMES_ENDPOINT     ||= 'https://gamelist.api.playstation.com/v1/users/%s'
 
-    def initialize(identity)
-      @token = PlayStationNetworkAPI::Client.new().login
+    def initialize(refresh_token, identity)
+      @token = PlayStationNetworkAPI::Client.new(refresh_token).login
       @identity = identity
     end
 
@@ -16,8 +16,7 @@ module PlayStationNetworkAPI
       request = PlayStationNetworkAPI::Client.new(base_uri: format(USERS_ENDPOINT, identity))
         .get('/profile2', headers: { 'Authorization': "Bearer #{ token }" },
           query: {
-            # fields: 'npId,onlineId,accountId,avatarUrls,plus,aboutMe,languagesUsed,trophySummary(@default,level,progress,earnedTrophies),isOfficiallyVerified,personalDetail(@default,profilePictureUrls),personalDetailSharing,personalDetailSharingRequestMessageFlag,primaryOnlineStatus,presences(@titleInfo,hasBroadcastData),friendRelation,requestMessageFlag,blocking,mutualFriendsCount,following,followerCount,friendsCount,followingUsersCount',
-            fields: 'npId,onlineId,accountId,avatarUrls,plus,aboutMe,languagesUsed,trophySummary(@default,level,progress,earnedTrophies),isOfficiallyVerified,personalDetail,personalDetail(@default,profilePictureUrls),personalDetailSharing,personalDetailSharingRequestMessageFlag,primaryOnlineStatus,presences(@default,platform,@titleInfo,hasBroadcastData),friendRelation,requestMessageFlag,blocking,mutualFriendsCount,following,followerCount,friendsCount,followingUsersCount,consoleAvailability,currentOnlineId,displayableOldOnlineId',
+            fields: 'npId,onlineId,currentOnlineId,displayableOldOnlineId,accountId,avatarUrls,plus,aboutMe,languagesUsed,trophySummary(@default,level,progress,earnedTrophies),isOfficiallyVerified,personalDetail,personalDetail(@default,profilePictureUrls),personalDetailSharing,personalDetailSharingRequestMessageFlag,primaryOnlineStatus,presences(@default,platform,@titleInfo,hasBroadcastData),friendRelation,requestMessageFlag,blocking,mutualFriendsCount,following,followerCount,friendsCount,followingUsersCount,consoleAvailability,currentOnlineId,displayableOldOnlineId',
             avatarSizes: 'xl',
             profilePictureSizes: 'xl',
             languagesUsedLanguageSet: 'set3',
