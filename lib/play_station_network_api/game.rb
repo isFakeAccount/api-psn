@@ -3,19 +3,19 @@ module PlayStationNetworkAPI
     attr_accessor :token, :title_id
 
     GAME_ENDPOINT   ||= 'https://gamelist.api.playstation.com/v1/'
-    TROPHY_ENDPOINT ||= 'https://us-tpy.np.community.playstation.net/trophy/v1/'
+    TROPHY_ENDPOINT ||= 'https://%s-tpy.np.community.playstation.net/trophy/v1/'
 
-    def initialize(title_id)
-      @token = PlayStationNetworkAPI::Client.new().login
+    def initialize(refresh_token, title_id)
+      @token = PlayStationNetworkAPI::Client.new(refresh_token).login
       @title_id = title_id
     end
 
     def details
     end
 
-    def trophy_info(identity = nil)
+    def trophy_info(identity = nil, region: 'gb')
       if title_id.start_with?('CU')
-        request = PlayStationNetworkAPI::Client.new(base_uri: TROPHY_ENDPOINT)
+        request = PlayStationNetworkAPI::Client.new(base_uri: format(TROPHY_ENDPOINT, region))
           .get("/apps/trophyTitles", headers: { 'Authorization': "Bearer #{ token }" },
             query: {
               npTitleIds: title_id,
@@ -35,7 +35,7 @@ module PlayStationNetworkAPI
         params[:comparedUser] = 'pacMakaveli90'
       end
 
-      request = PlayStationNetworkAPI::Client.new(base_uri: TROPHY_ENDPOINT)
+      request = PlayStationNetworkAPI::Client.new(base_uri: format(TROPHY_ENDPOINT, region))
         .get("/trophyTitles/#{ title_id }", headers: { 'Authorization': "Bearer #{ token }" },
           query: {
             # platform: 'PS3',

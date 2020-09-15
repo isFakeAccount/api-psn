@@ -2,21 +2,22 @@ module PlayStationNetworkAPI
   class User
     attr_accessor :token, :identity
 
-    USERS_ENDPOINT     ||= 'https://gb-prof.np.community.playstation.net/userProfile/v1/users/%s'
+    USERS_ENDPOINT     ||= 'https://%s-prof.np.community.playstation.net/userProfile/v1/users/%s'
     COMMUNITY_ENDPOINT ||= 'https://communities.api.playstation.com/v1/'
     ACTIVITY_ENDPOINT  ||= 'https://activity.api.np.km.playstation.net/activity/api/v2/users/%s/'
     GAMES_ENDPOINT     ||= 'https://gamelist.api.playstation.com/v1/users/%s'
+    TROPHY_ENDPOINT    ||= 'https://%s-tpy.np.community.playstation.net/trophy/v1/'
 
     def initialize(refresh_token, identity)
       @token = PlayStationNetworkAPI::Client.new(refresh_token).login
       @identity = identity
     end
 
-    def info
-      request = PlayStationNetworkAPI::Client.new(base_uri: format(USERS_ENDPOINT, identity))
+    def info(region: 'gb')
+      request = PlayStationNetworkAPI::Client.new(base_uri: format(USERS_ENDPOINT, region, identity))
         .get('/profile2', headers: { 'Authorization': "Bearer #{ token }" },
           query: {
-            fields: 'npId,onlineId,currentOnlineId,displayableOldOnlineId,accountId,avatarUrls,plus,aboutMe,languagesUsed,trophySummary(@default,level,progress,earnedTrophies),isOfficiallyVerified,personalDetail,personalDetail(@default,profilePictureUrls),personalDetailSharing,personalDetailSharingRequestMessageFlag,primaryOnlineStatus,presences(@default,platform,@titleInfo,hasBroadcastData),friendRelation,requestMessageFlag,blocking,mutualFriendsCount,following,followerCount,friendsCount,followingUsersCount,consoleAvailability,currentOnlineId,displayableOldOnlineId',
+            fields: 'npId,onlineId,currentOnlineId,displayableOldOnlineId,accountId,avatarUrls,plus,aboutMe,languagesUsed,trophySummary(@default,level,progress,earnedTrophies),isOfficiallyVerified,personalDetail(@default,profilePictureUrls),personalDetailSharing,personalDetailSharingRequestMessageFlag,primaryOnlineStatus,presences(@default,@titleInfo,platform,lastOnlineDate,hasBroadcastData),friendRelation,requestMessageFlag,blocking,mutualFriendsCount,following,followerCount,friendsCount,followingUsersCount,consoleAvailability',
             avatarSizes: 'xl',
             profilePictureSizes: 'xl',
             languagesUsedLanguageSet: 'set3',
@@ -30,11 +31,11 @@ module PlayStationNetworkAPI
 
     # Get friends of a given Identity
     #
-    def friends(sort: 'onlineStatus', offset: 0, limit: 25)
+    def friends(sort: 'onlineStatus', offset: 0, limit: 100)
       request = PlayStationNetworkAPI::Client.new(base_uri: format(USERS_ENDPOINT, identity))
         .get('/friends/profiles2', headers: { 'Authorization': "Bearer #{ token }" },
           query: {
-            fields: 'onlineId,accountId,avatarUrls,plus,trophySummary(@default),isOfficiallyVerified,personalDetail(@default,profilePictureUrls),presences(@titleInfo,hasBroadcastData,lastOnlineDate),presences(@titleInfo),friendRelation,consoleAvailability',
+            fields: 'npId,onlineId,accountId,avatarUrls,plus,aboutMe,languagesUsed,trophySummary(@default,level,progress,earnedTrophies),isOfficiallyVerified,personalDetail(@default,profilePictureUrls),personalDetailSharing,personalDetailSharingRequestMessageFlag,primaryOnlineStatus,presences(@default,@titleInfo,platform,lastOnlineDate,hasBroadcastData),requestMessageFlag,blocking,friendRelation,following,consoleAvailability',
             offset: offset,
             limit: limit,
             profilePictureSizes: 'xl',
@@ -47,8 +48,6 @@ module PlayStationNetworkAPI
       request.parsed_response
     end
 
-    # Get the games of a given Identity
-    # 
     def games(limit: 100, offset: 0)
       request = PlayStationNetworkAPI::Client.new(base_uri: format(GAMES_ENDPOINT, identity))
         .get('/titles', headers: { 'Authorization': "Bearer #{ token }" },
@@ -65,7 +64,7 @@ module PlayStationNetworkAPI
     end
 
     # Get the communities of a given Identity
-    # 
+    #
     def communities(limit: 25, offset: 0)
       request = PlayStationNetworkAPI::Client.new(base_uri: COMMUNITY_ENDPOINT)
         .get('/communities', headers: { 'Authorization': "Bearer #{ token }" },
