@@ -48,6 +48,11 @@ module PlayStationNetworkAPI
       request.parsed_response
     end
 
+    # Get the games of a given Identity
+    #
+    # This only seems to get the PS4 titles and the information returned is quite limited.
+    # Instead, we'll use the same endpoint the app is using to fetch the games. This will remain as we get a nicer list
+    #
     def games(limit: 100, offset: 0)
       request = PlayStationNetworkAPI::Client.new(base_uri: format(GAMES_ENDPOINT, identity))
         .get('/titles', headers: { 'Authorization': "Bearer #{ token }" },
@@ -57,6 +62,22 @@ module PlayStationNetworkAPI
             sort: '-lastPlayedDate',
             limit: limit,
             offset: offset
+          }
+        )
+
+      request.parsed_response
+    end
+
+    def trophies(limit: 100, offset: 0, language: 'en-GB', region: 'gb')
+      request = PlayStationNetworkAPI::Client.new(base_uri: format(TROPHY_ENDPOINT, region))
+        .get('/trophyTitles', headers: { 'Authorization': "Bearer #{ token }" },
+          query: {
+            limit: limit,
+            offset: offset,
+            fields: '@default',
+            platform: 'PS3,PS4,PSVITA',
+            npLanguage: language,
+            comparedUser: identity
           }
         )
 
