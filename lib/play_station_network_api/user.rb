@@ -31,8 +31,8 @@ module PlayStationNetworkAPI
 
     # Get friends of a given Identity
     #
-    def friends(sort: 'onlineStatus', offset: 0, limit: 100)
-      request = PlayStationNetworkAPI::Client.new(base_uri: format(USERS_ENDPOINT, identity))
+    def friends(sort: 'onlineStatus', offset: 0, limit: 100, region: 'gb')
+      request = PlayStationNetworkAPI::Client.new(base_uri: format(USERS_ENDPOINT, region, identity))
         .get('/friends/profiles2', headers: { 'Authorization': "Bearer #{ token }" },
           query: {
             fields: 'npId,onlineId,accountId,avatarUrls,plus,aboutMe,languagesUsed,trophySummary(@default,level,progress,earnedTrophies),isOfficiallyVerified,personalDetail(@default,profilePictureUrls),personalDetailSharing,personalDetailSharingRequestMessageFlag,primaryOnlineStatus,presences(@default,@titleInfo,platform,lastOnlineDate,hasBroadcastData),requestMessageFlag,blocking,friendRelation,following,consoleAvailability',
@@ -68,6 +68,8 @@ module PlayStationNetworkAPI
       request.parsed_response
     end
 
+    # Get all the games of a given Identity
+    #
     def trophies(limit: 100, offset: 0, language: 'en-GB', region: 'gb')
       request = PlayStationNetworkAPI::Client.new(base_uri: format(TROPHY_ENDPOINT, region))
         .get('/trophyTitles', headers: { 'Authorization': "Bearer #{ token }" },
