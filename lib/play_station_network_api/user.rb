@@ -3,10 +3,10 @@ module PlayStationNetworkAPI
     attr_accessor :token, :identity
 
     USERS_ENDPOINT     ||= 'https://%s-prof.np.community.playstation.net/userProfile/v1/users/%s'
-    COMMUNITY_ENDPOINT ||= 'https://communities.api.playstation.com/v1/'
-    ACTIVITY_ENDPOINT  ||= 'https://activity.api.np.km.playstation.net/activity/api/v2/users/%s/'
     GAMES_ENDPOINT     ||= 'https://gamelist.api.playstation.com/v1/users/%s'
     TROPHY_ENDPOINT    ||= 'https://%s-tpy.np.community.playstation.net/trophy/v1/'
+    COMMUNITY_ENDPOINT ||= 'https://communities.api.playstation.com/v1/'
+    ACTIVITY_ENDPOINT  ||= 'https://activity.api.np.km.playstation.net/activity/api/v2/users/%s/'
 
     def initialize(refresh_token, identity)
       @token = PlayStationNetworkAPI::Client.new(refresh_token).login
@@ -57,7 +57,7 @@ module PlayStationNetworkAPI
       request = PlayStationNetworkAPI::Client.new(base_uri: format(GAMES_ENDPOINT, identity))
         .get('/titles', headers: { 'Authorization': "Bearer #{ token }" },
           query: {
-            type: 'played',
+            type: 'owned,played',
             app: 'richProfile',
             sort: '-lastPlayedDate',
             limit: limit,
@@ -105,7 +105,7 @@ module PlayStationNetworkAPI
     end
 
     # Get the PlayStation Network Activity of a given Identity
-    # 
+    #
     def activity(page: 0, offset: 0, size: 25, include_comments: true)
       request = PlayStationNetworkAPI::Client.new(base_uri: format(ACTIVITY_ENDPOINT, identity))
         .get("/feed/#{ page }", headers: { 'Authorization': "Bearer #{ token }" },
@@ -116,9 +116,9 @@ module PlayStationNetworkAPI
           }
         )
 
-      # 
+      #
       # TODO: Deal with condensed stories
-      # 
+      #
 
       request.parsed_response
     end
@@ -138,6 +138,5 @@ module PlayStationNetworkAPI
     def unblock
 
     end
-
   end
 end
