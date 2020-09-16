@@ -63,7 +63,7 @@ module PlayStationNetworkAPI
 
   private
 
-    def t(identity = nil, get: nil, trophy_group: nil)
+    def t(identity = nil, get: nil, trophy_group: nil, region: 'gb')
       params = { }
       url = "/trophyTitles/#{ title_id }/trophyGroups"
 
@@ -81,7 +81,7 @@ module PlayStationNetworkAPI
         params[:comparedUser] = identity
       end
 
-      request = PlayStationNetworkAPI::Client.new(base_uri: TROPHY_ENDPOINT)
+      request = PlayStationNetworkAPI::Client.new(base_uri: format(TROPHY_ENDPOINT, region))
         .get(url, headers: { 'Authorization': "Bearer #{ token }" },
           query: {
             iconSize: 'm', # [s, m]
