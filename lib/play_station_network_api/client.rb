@@ -36,6 +36,10 @@ module PlayStationNetworkAPI
       self.class.get(url, options)
     end
 
+    def post(url, options = {})
+      self.class.post(url, options)
+    end
+
     def login_with(npsso)
       response = self.class.post('/oauth/token',
         headers: {
@@ -56,7 +60,6 @@ module PlayStationNetworkAPI
     # first time login, or the Refresh Token.
     #
     def login
-      puts token
       response = self.class.post('/oauth/token',
         headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
