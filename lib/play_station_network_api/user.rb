@@ -29,6 +29,85 @@ module PlayStationNetworkAPI
       request.parsed_response
     end
 
+    # Get the games of a given Identity
+    #
+    # This only seems to get the PS4 titles and the information returned is quite limited.
+    # Instead, we'll use the same endpoint the app is using to fetch the games. This will remain as we get a nicer list
+    #
+    def games(limit: 100, offset: 0, include_ps3: false, language: 'en-GB', region: 'gb')
+
+      if include_ps3
+
+        # Returns all the User's games, including the PS3 and PSVITA ones.
+        # Note that the data returned by this endpoints is different than the '/titles' one.
+        #
+        # {
+        #   "npCommunicationId" => "NPWR15120_00",
+        #   "trophyTitleName" => "Ghost of Tsushima",
+        #   "trophyTitleDetail" => "Trophy set for Ghost of Tsushima",
+        #   "trophyTitleIconUrl" => "http://trophy01.np.community.playstation.net/trophy/np/NPWR15120_00_00736F40BFE5A427C57A238478A141FABB81ABA3C7/F7780A7B9141F2A1D0B68E578787D962D7F69C31.PNG",
+        #   "trophyTitlePlatfrom" => "PS4",
+        #   "hasTrophyGroups" => false,
+        #   "definedTrophies" => {
+        #     "bronze" => 40,
+        #     "silver" => 9,
+        #     "gold" => 2,
+        #     "platinum" => 1
+        #   },
+        #   "fromUser" => {
+        #     "onlineId" => "pacMakaveli90",
+        #     "progress" => 22,
+        #     "earnedTrophies" => {
+        #       "bronze" => 16,
+        #       "silver" => 0,
+        #       "gold" => 0,
+        #       "platinum" => 0
+        #     },
+        #     "hiddenFlag" => false,
+        #     "lastUpdateDate" => "2020-09-01T20:54:56Z"
+        #   }
+        # }
+        #
+
+        endpoint = format(TROPHY_ENDPOINT, region)
+        url = '/trophyTitles'
+        query = {
+          fields: '@default',
+          platform: 'PS3,PS4,PSVITA',
+          npLanguage: language,
+          comparedUser: identity
+        }
+
+      else
+
+        # {
+        #   "titleId" => "CUSA13323_00",
+        #   "name" => "Ghost of Tsushima",
+        #   "image" => "https://image.api.np.km.playstation.net/images/?format=png&image=http%3A%2F%2Fgs2-sec.ww.prod.dl.playstation.net%2Fgs2-sec%2Fappkgo%2Fprod%2FCUSA13323_00%2F8%2Fi_79e6fad7f6d7610ec23583faf0f43c6a09057193f811583539f88f632cbe8fd7%2Fi%2Ficon0.png&sign=599d63007b7c2d555d376b43d5a8808adc9cbf35&w=512&h=512",
+        #   "privacy"=>"PUBLIC"
+        # }
+        #
+        endpoint = format(GAMES_ENDPOINT, identity)
+        url = '/titles'
+        query = {
+          type: 'owned,played',
+          app: 'richProfile',
+          sort: '-lastPlayedDate',
+        }
+
+      end
+
+      request = PlayStationNetworkAPI::Client.new(base_uri: endpoint ).get(url,
+        headers: { 'Authorization': "Bearer #{ token }" },
+        query: {
+          limit: limit,
+          offset: offset
+        }.merge(query)
+      )
+
+      request.parsed_response
+    end
+
     # Get friends of a given Identity
     #
     def friends(sort: 'onlineStatus', offset: 0, limit: 100, region: 'gb')
@@ -42,44 +121,6 @@ module PlayStationNetworkAPI
             avatarSizes: 'xl',
             titleIconSize: 's',
             sort: sort
-          }
-        )
-
-      request.parsed_response
-    end
-
-    # Get the games of a given Identity
-    #
-    # This only seems to get the PS4 titles and the information returned is quite limited.
-    # Instead, we'll use the same endpoint the app is using to fetch the games. This will remain as we get a nicer list
-    #
-    def games(limit: 100, offset: 0)
-      request = PlayStationNetworkAPI::Client.new(base_uri: format(GAMES_ENDPOINT, identity))
-        .get('/titles', headers: { 'Authorization': "Bearer #{ token }" },
-          query: {
-            type: 'owned,played',
-            app: 'richProfile',
-            sort: '-lastPlayedDate',
-            limit: limit,
-            offset: offset
-          }
-        )
-
-      request.parsed_response
-    end
-
-    # Get all the games of a given Identity
-    #
-    def trophies(limit: 100, offset: 0, language: 'en-GB', region: 'gb')
-      request = PlayStationNetworkAPI::Client.new(base_uri: format(TROPHY_ENDPOINT, region))
-        .get('/trophyTitles', headers: { 'Authorization': "Bearer #{ token }" },
-          query: {
-            limit: limit,
-            offset: offset,
-            fields: '@default',
-            platform: 'PS3,PS4,PSVITA',
-            npLanguage: language,
-            comparedUser: identity
           }
         )
 
@@ -116,27 +157,9 @@ module PlayStationNetworkAPI
           }
         )
 
-      #
       # TODO: Deal with condensed stories
       #
-
       request.parsed_response
-    end
-
-    def add
-
-    end
-
-    def remove
-
-    end
-
-    def block
-
-    end
-
-    def unblock
-
     end
   end
 end
