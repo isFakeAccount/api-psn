@@ -16,7 +16,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/games-
 
 The MIT License (MIT)
 
-Copyright (c) 2018 Vlad Radulescu, Studio51 Solutions, Studio51 Gaming Solutions
+Copyright (c) 2020 Vlad Radulescu, Studio51 Solutions, Studio51 Gaming Solutions, games.directory
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
