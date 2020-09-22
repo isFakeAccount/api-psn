@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Vlad Radulescu']
   spec.email         = ['oss@games.directory']
 
-  spec.summary       = %q{  }
-  spec.description   = %q{  }
+  spec.summary       = %q{ PlayStation Network API }
+  spec.description   = %q{ Retrieve User Information, Trophies, Game and Store data from the PlayStation Network }
   spec.homepage      = ''
   spec.license       = 'MIT'
 
@@ -21,5 +21,4 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 2'
   spec.add_development_dependency 'rake', '~> 12.3'
-  spec.add_development_dependency 'pry'
 end
