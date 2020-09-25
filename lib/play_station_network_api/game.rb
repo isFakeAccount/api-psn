@@ -206,7 +206,6 @@ module PlayStationNetworkAPI
     # }
     #
     def get_communication_id(region: 'gb')
-      puts title_id
       request = PlayStationNetworkAPI::Client.new(base_uri: format(TROPHY_ENDPOINT, region))
         .get('/apps/trophyTitles',
           headers: { 'Authorization': "Bearer #{ token }" },

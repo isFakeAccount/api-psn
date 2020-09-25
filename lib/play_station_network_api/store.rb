@@ -1,8 +1,37 @@
 module PlayStationNetworkAPI
   class Store
+    include HTTParty
+
     require 'net/http'
 
     attr_reader :args, :region, :language, :headers
+
+    # Looks like each Region has a different store code. This is not going to be used right now, but
+    # we might want to store this information for later use.
+    #
+    PS_PLUS_REGIONS = {
+      SCEA: 'STORE-MSF77008-PSPLUSFREEGAMES',
+      SCEE: 'STORE-MSF75508-PLUSINSTANTGAME',
+      'SCE-ASIA': 'STORE-MSF86012-PLUS_FTT_CONTENT',
+      SCEJ: 'PN.CH.JP-PN.CH.MIXED.JP-PSPLUSFREEPLAY',
+      SCEK: 'STORE-MSF86012-PLUS_FTT_KR'
+    }.freeze
+
+    # Available stores we can query.
+    # TODO: As we check the stores, update the update frequency
+    #
+    STORES = {
+      ALL: 'STORE-MSF75508-FULLGAMES',              # monthly?
+      LATEST: 'STORE-MSF75508-GAMELATEST',          # daily
+      SOON: 'STORE-MSF75508-COMINGSOON',            # daily
+      PLUS: 'STORE-MSF75508-PLUSINSTANTGAME',       # bi-weekly
+      PRICE_DROPS: 'STORE-MSF75508-PRICEDROPSCHI',  # daily
+      DEALS: 'STORE-MSF75508-DOTW1',                # daily
+      OFFERS: 'STORE-MSF75508-GAMESUNDER202018',    # daily
+      DISCOUNTS: 'STORE-MSF75508-PSPLUSDOUBLEDISC', # daily
+      CHOICES: 'STORE-MSF75508-EDITORSCHOICE'       # daily
+
+    }.freeze
 
     def initialize(args, region: 'GB', language: 'en')
       @args = args
@@ -14,6 +43,22 @@ module PlayStationNetworkAPI
         "Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         "Authority" => "store.playstation.com"
       }
+    end
+
+    def games(limit = 99, offset = 0, region = 'EU', store: STORES[:ALL])
+      request = PlayStationNetworkAPI::Client.new(base_uri: 'https://store.playstation.com')
+        .get("/chihiro-api/viewfinder/GB/EN/999/#{ store }",
+          headers: {},
+          query: {
+            size: limit,
+            start: offset,
+            gkb: 1,
+            geoCountry: region,
+            # sort: 'release_date'
+          }
+        )
+
+      request
     end
 
     def search(game_type = 'PSN Game')
