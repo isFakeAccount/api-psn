@@ -224,25 +224,15 @@ module PlayStationNetworkAPI
     end
 
     def get_store_id
-      database = PlayStationNetworkAPI::Client.new(base_uri: 'https://ps4database.io')
-        .get('/dataApi',
-          query: {
-            id: title_id,
-            env: 'NP',
-            method: 'meta'
-          }
-        )
+      response = HTTParty.head("https://store.playstation.com/en-gb/resolve/#{ title_id }")
 
-      if (content_id = database['contentId'])
-        playstation = PlayStationNetworkAPI::Client.new(base_uri: 'https://store.playstation.com/en-gb')
-          .get("/product/#{ content_id }")
+      if response.request.redirect
 
-        store_id = playstation.parsed_response.scan(/([^\/.]*)-#{ title_id }-([^\/.]*)/).first
-      else
-        # TODO
+        # Try this method instead of 'uri.scan(/([^\/.]*)-#{ title_id }-([^\/.]*)/).first'
+        # TODO: Review this, and if it's not working, then add back the scan method.
+        #
+        response.request.last_uri.to_s.split('/').reject!(&:empty?).sort!.first
       end
-
-      return [store_id.first, title_id, store_id.last].join('-')
     end
   end
 end

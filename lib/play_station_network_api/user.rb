@@ -31,8 +31,9 @@ module PlayStationNetworkAPI
 
     # Get the games of a given Identity
     #
-    # This only seems to get the PS4 titles and the information returned is quite limited.
-    # Instead, we'll use the same endpoint the app is using to fetch the games. This will remain as we get a nicer list
+    # This only seems to get the PS4 titles and the information returned is quite
+    # limited. Instead, we'll use the same endpoint the app is using to fetch
+    # the games. This will remain as we get a nicer list
     #
     def games(limit: 100, offset: 0, include_ps3: false, language: 'en-GB', region: 'gb')
 
