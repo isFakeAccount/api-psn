@@ -223,16 +223,26 @@ module PlayStationNetworkAPI
       # TODO
     end
 
+    # {
+    #   "data": {
+    #     "relationships": {
+    #       "children": {
+    #         "data": [
+    #           {
+    #             "id": "EP0006-CUSA00049_00-BATTLEFIELD40000",
+    #             "type": "game"
+    #           }
+    #         ]
+    #       }
+    #     }
+    #   },
+    #   "included": []
+    # }
     def get_store_id
-      response = HTTParty.head("https://store.playstation.com/en-gb/resolve/#{ title_id }")
+      request = PlayStationNetworkAPI::Client.new(base_uri: 'https://store.playstation.com//valkyrie-api/en/GB/19')
+        .get("/resolve/#{ title_id }")
 
-      if response.request.redirect
-
-        # Try this method instead of 'uri.scan(/([^\/.]*)-#{ title_id }-([^\/.]*)/).first'
-        # TODO: Review this, and if it's not working, then add back the scan method.
-        #
-        response.request.last_uri.to_s.split('/').reject!(&:empty?).sort!.first
-      end
+      request.parsed_response.dig('data', 'relationships', 'children', 'data', 0, 'id')
     end
   end
 end
