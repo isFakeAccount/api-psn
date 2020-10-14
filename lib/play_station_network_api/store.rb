@@ -86,8 +86,8 @@ module PlayStationNetworkAPI
       end
     end
 
-    def details
-      get(details_url(args)) do |response|
+    def details(size: 50)
+      get(details_url(args, size)) do |response|
         response
       end
     end
@@ -122,8 +122,8 @@ module PlayStationNetworkAPI
       "https://store.playstation.com/valkyrie-api/#{ language }/#{ region }/19/tumbler-search/#{ URI.encode(query) }"
     end
 
-    def details_url(identifier)
-      "https://store.playstation.com/store/api/chihiro/00_09_000/container/#{ region }/#{ language }/19/#{ identifier }"
+    def details_url(identifier, size)
+      "https://store.playstation.com/store/api/chihiro/00_09_000/container/#{ region }/#{ language }/19/#{ identifier }?size=#{ size }"
     end
 
     def deep_transform_keys(object, &block)
