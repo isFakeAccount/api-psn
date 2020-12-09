@@ -5,6 +5,110 @@ module PlayStationNetworkAPI
     require 'net/http'
 
     attr_reader :args, :region, :language, :headers
+    
+    # "localeRegionMapping": {
+    #   "es-ar": "SIEA",
+    #   "es-bz": "SIEA",
+    #   "es-bo": "SIEA",
+    #   "pt-br": "SIEA",
+    #   "en-ca": "SIEA",
+    #   "fr-ca": "SIEA",
+    #   "es-cl": "SIEA",
+    #   "es-co": "SIEA",
+    #   "es-cr": "SIEA",
+    #   "es-ec": "SIEA",
+    #   "es-sv": "SIEA",
+    #   "es-gt": "SIEA",
+    #   "es-hn": "SIEA",
+    #   "es-mx": "SIEA",
+    #   "es-ni": "SIEA",
+    #   "es-pa": "SIEA",
+    #   "es-py": "SIEA",
+    #   "es-pe": "SIEA",
+    #   "en-us": "SIEA",
+    #   "es-uy": "SIEA",
+    #   "es-ve": "SIEA",
+    #   "en-au": "SIEE",
+    #   "de-at": "SIEE",
+    #   "ar-bh": "SIEE",
+    #   "en-bh": "SIEE",
+    #   "nl-be": "SIEE",
+    #   "fr-be": "SIEE",
+    #   "en-bg": "SIEE",
+    #   "en-hr": "SIEE",
+    #   "en-cy": "SIEE",
+    #   "cs-cz": "SIEE",
+    #   "en-cz": "SIEE",
+    #   "da-dk": "SIEE",
+    #   "en-dk": "SIEE",
+    #   "en-fi": "SIEE",
+    #   "fi-fi": "SIEE",
+    #   "fr-fr": "SIEE",
+    #   "de-de": "SIEE",
+    #   "en-gr": "SIEE",
+    #   "el-gr": "SIEE",
+    #   "en-hu": "SIEE",
+    #   "hu-hu": "SIEE",
+    #   "en-is": "SIEE",
+    #   "en-in": "SIEE",
+    #   "en-ie": "SIEE",
+    #   "en-il": "SIEE",
+    #   "it-it": "SIEE",
+    #   "ar-kw": "SIEE",
+    #   "en-kw": "SIEE",
+    #   "ar-lb": "SIEE",
+    #   "en-lb": "SIEE",
+    #   "fr-lu": "SIEE",
+    #   "de-lu": "SIEE",
+    #   "en-mt": "SIEE",
+    #   "nl-nl": "SIEE",
+    #   "en-nz": "SIEE",
+    #   "en-no": "SIEE",
+    #   "no-no": "SIEE",
+    #   "ar-om": "SIEE",
+    #   "en-om": "SIEE",
+    #   "en-pl": "SIEE",
+    #   "pl-pl": "SIEE",
+    #   "pt-pt": "SIEE",
+    #   "ar-qa": "SIEE",
+    #   "en-qa": "SIEE",
+    #   "en-ro": "SIEE",
+    #   "ro-ro": "SIEE",
+    #   "ru-ru": "SIEE",
+    #   "ar-sa": "SIEE",
+    #   "en-sa": "SIEE",
+    #   "en-sk": "SIEE",
+    #   "en-si": "SIEE",
+    #   "en-za": "SIEE",
+    #   "es-es": "SIEE",
+    #   "en-se": "SIEE",
+    #   "sv-se": "SIEE",
+    #   "fr-ch": "SIEE",
+    #   "de-ch": "SIEE",
+    #   "it-ch": "SIEE",
+    #   "en-tr": "SIEE",
+    #   "tr-tr": "SIEE",
+    #   "ar-ae": "SIEE",
+    #   "en-ae": "SIEE",
+    #   "en-gb": "SIEE",
+    #   "ru-ua": "SIEE",
+    #   "en-hk": "SIEJA",
+    #   "zh-cn-hk": "SIEJA",
+    #   "zh-tw-hk": "SIEJA",
+    #   "id-id": "SIEJA",
+    #   "en-id": "SIEJA",
+    #   "ja-jp": "SIEJA",
+    #   "ko-kr": "SIEJA",
+    #   "en-my": "SIEJA",
+    #   "en-ph": "SIEJA",
+    #   "en-sg": "SIEJA",
+    #   "en-tw": "SIEJA",
+    #   "zh-tw-tw": "SIEJA",
+    #   "en-th": "SIEJA",
+    #   "th-th": "SIEJA",
+    #   "en-vn": "SIEJA",
+    #   "vi-vn": "SIEJA"
+    # },
 
     # Looks like each Region has a different store code. This is not going to be used right now, but
     # we might want to store this information for later use.
@@ -21,7 +125,20 @@ module PlayStationNetworkAPI
     # TODO: As we check the stores, update the update frequency
     #
     STORES = {
-      ALL: 'STORE-MSF75508-FULLGAMES',              # monthly?
+      ALL: 'STORE-MSF77008-ALLGAMES',              # ( All Games ) - monthly
+      FULL: 'STORE-MSF77008-PS3FULLGAMES',         # ( Full Games )
+      DIGITAL: 'STORE-MSF77008-PSNGAME',           # ( Digital Only )
+      ULTIMATE: 'STORE-MSF77008-ULTIMATEEDITIONS', # ( Ultimate Editions )
+      BUNDLES: 'STORE-MSF77008-BUNDLES',           # ( Bundles )
+      PS2: 'STORE-MSF77008-PS2GAMESONPS4G',        # ( PS2 Games )
+      PS1: 'STORE-MSF77008-CLASSICS',              # ( PS1 Classics )
+      MINI: 'STORE-MSF77008-MINIS',                # ( Minis )
+      PS3TOPS4: 'STORE-MSF77008-PS3PS4XBUY',       # ( PS3 - PS4 Cross Buy )
+      PS3TOPSV: 'STORE-MSF77008-9_PS3PSVCBBUNDLE', # ( PS3 - PS Vita Cross Buy )
+      PS4TOPSV: 'STORE-MSF77008-9_PS4PSVCBBUNDLE', # ( PS4 - PS Vita Cross Buy )
+      
+      # FULL: 'STORE-MSF75508-FULLGAMES',              # monthly?
+      
       LATEST: 'STORE-MSF75508-GAMELATEST',          # daily
       SOON: 'STORE-MSF75508-COMINGSOON',            # daily
       PLUS: 'STORE-MSF75508-PLUSINSTANTGAME',       # bi-weekly

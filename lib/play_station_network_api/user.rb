@@ -93,7 +93,7 @@ module PlayStationNetworkAPI
         query = {
           type: 'owned,played',
           app: 'richProfile',
-          sort: '-lastPlayedDate',
+          sort: '-lastPlayedDate'
         }
 
       end
