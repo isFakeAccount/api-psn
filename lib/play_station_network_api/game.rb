@@ -68,6 +68,8 @@ module PlayStationNetworkAPI
         unless (title_id = get_communication_id).nil?
           self.class.new(refresh_token, title_id).trophy_info
         end
+      elsif request.dig('error', 'code') == 2138635
+        error
       elsif request['error']
         error
       else
@@ -254,7 +256,7 @@ module PlayStationNetworkAPI
     #   "included": []
     # }
     def get_store_id
-      request = PlayStationNetworkAPI::Client.new(base_uri: 'https://store.playstation.com//valkyrie-api/en/GB/19')
+      request = PlayStationNetworkAPI::Client.new(base_uri: 'https://store.playstation.com/valkyrie-api/en/US/999')
         .get("/resolve/#{ title_id }")
 
       request.parsed_response.dig('data', 'relationships', 'children', 'data', 0, 'id')
