@@ -1,11 +1,12 @@
 module PlayStationNetworkAPI
   class Game
-    attr_accessor :token, :title_id, :communication_id
+    attr_accessor :refresh_token, :token, :title_id, :communication_id
 
     GAME_ENDPOINT   ||= 'https://gamelist.api.playstation.com/v1/'
     TROPHY_ENDPOINT ||= 'https://%s-tpy.np.community.playstation.net/trophy/v1/'
 
     def initialize(refresh_token, title_id)
+      @refresh_token = refresh_token
       @token = PlayStationNetworkAPI::Client.new(refresh_token).login
 
       @title_id = title_id
@@ -56,8 +57,22 @@ module PlayStationNetworkAPI
             npLanguage: 'en'
           }.merge(params)
         )
+      
+      error = {
+        code: request.dig('error', 'code'),
+        message_api: request.dig('error', 'message'),
+        message_gem: "The 'communication_id' returned no results, we tried querying the API for you, in order to get the required 'title_id' with no success.\n You will have to manually find the 'communication' for this game in order to return a User's Trophies.\nPlease note 'communication_id' starts with 'NP*'"
+      }
 
-      request.parsed_response
+      if request.dig('error', 'code') == 2138125
+        unless (title_id = get_communication_id).nil?
+          self.class.new(refresh_token, title_id).trophy_info
+        end
+      elsif request['error']
+        error
+      else
+        request.parsed_response
+      end
     end
 
     # {
