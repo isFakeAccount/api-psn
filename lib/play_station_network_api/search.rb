@@ -7,7 +7,8 @@ module PlayStationNetworkAPI
     #   max: 50
     # }
     # country_code [String]
-    def initialize(query, limit: 50, offset: 0, country_code: 'US')
+    # language_code [String]
+    def initialize(query, limit: 50, offset: 0, country_code: 'US', language_code: 'en')
       # https://m.np.playstation.net/api/search/v1/universalSearch
       request = post('/search/v1/universalSearch',
         body: {
