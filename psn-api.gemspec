@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Vlad Radulescu']
   spec.email         = ['oss@games.directory']
 
-  spec.summary       = %q{ PlayStation Network API }
-  spec.description   = %q{ Retrieve User Information, Trophies, Game and Store data from the PlayStation Network }
-  spec.homepage      = ''
+  spec.summary       = %q{ Ruby wrapper for the PlayStation Network API }
+  spec.description   = %q{ Use the new PlayStation Network API to get a User's Profile, Trophies, Games and more.. }
+  spec.homepage      = 'https://playstation.games.directory'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split("\n")
@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'httparty', '~> 0.16'
 
+  spec.add_development_dependency 'pry', '~> 0'
   spec.add_development_dependency 'bundler', '~> 2'
   spec.add_development_dependency 'rake', '~> 12.3'
 end
