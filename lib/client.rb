@@ -2,11 +2,12 @@ class Client
   include HTTParty
   base_uri 'https://m.np.playstation.net/api'
 
-  attr_accessor :access_token, :user_agent
+  attr_accessor :access_token, :default_headers
 
   def initialize(access_token = nil)
     @access_token = access_token
-    @user_agent = {
+    @default_headers = {
+      'Accept-Language'] => 'en-US', # TODO: Make this a variable for other languages
       'User-Agent' => "psn-api/#{ PlayStationNetworkAPI::VERSION }"
     }
   end
@@ -17,7 +18,7 @@ class Client
 
     self.class.get(url,
       headers: {
-        **user_agent,
+        **default_headers,
         'Authorization' => "Bearer #{ access_token }",
         **headers
       },
@@ -28,7 +29,7 @@ class Client
   def post(url, options = {})
     self.class.post(url, 
       headers: {
-        **user_agent,
+        **default_headers,
         'Content-Type' => 'application/json'
       },
       **options
