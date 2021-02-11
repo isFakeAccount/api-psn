@@ -18,7 +18,7 @@ module PlayStationNetworkAPI
     # }
     def most_purchased(offset: 0, limit: 10)
       raise 'limit must be less than or equal to 1000' if limit > 1000
-      warn "[DEPRECATED] This endpoint will go away, don't rely on it as things might break in the future!"
+      warn "[DEPRECATED] This endpoint has been marked as deprecated, don't rely on it as things might break in the future!"
 
       # https://m.np.playstation.net/api/catalog/v2/concepts/fetch?country=GB&language=en&age=999&offset=4446
       get([path, 'concepts', 'fetch'].join('/'),
