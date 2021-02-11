@@ -1,103 +1,103 @@
 module PlayStationNetworkAPI
-	class Catalog < Client
-		attr_accessor :country, :language, :age
+  class Catalog < Client
+    attr_accessor :country, :language, :age
 
-		# country [String]
-		# language [String]
-		# age [Integer]
-		def initialize(country = 'GB', language = 'en', age = 999)
-			@country = country
-			@language = language
-			@age = age
-		end
+    # country [String]
+    # language [String]
+    # age [Integer]
+    def initialize(country = 'GB', language = 'en', age = 999)
+      @country = country
+      @language = language
+      @age = age
+    end
 
-		# offset [Integer]
-		# limit [Integer] {
+    # offset [Integer]
+    # limit [Integer] {
     #   min: 1,
     #   max: 1000
     # }
-		def most_purchased(offset: 0, limit: 10)
-			raise 'limit must be less than or equal to 1000' if limit > 1000
-			warn "[DEPRECATED] This endpoint will go away, don't rely on it as things might break in the future!"
+    def most_purchased(offset: 0, limit: 10)
+      raise 'limit must be less than or equal to 1000' if limit > 1000
+      warn "[DEPRECATED] This endpoint will go away, don't rely on it as things might break in the future!"
 
-			# https://m.np.playstation.net/api/catalog/v2/concepts/fetch?country=GB&language=en&age=999&offset=4446
-			get([path, 'concepts', 'fetch'].join('/'),
-				query: {
-					country: country,
-					language: language,
-					age: age,
-					limit: limit,
-					offset: offset
-				}
-			).parsed_response
-		end
+      # https://m.np.playstation.net/api/catalog/v2/concepts/fetch?country=GB&language=en&age=999&offset=4446
+      get([path, 'concepts', 'fetch'].join('/'),
+        query: {
+          country: country,
+          language: language,
+          age: age,
+          limit: limit,
+          offset: offset
+        }
+      ).parsed_response
+    end
 
-		# concept_id [Integer]
-		# metadata [Boolean]: Different data is returned when true; stuff like age restrictions, release dates in different countries etc..
-		def concept(concept_id, metadata: false)
-			options = {}
+    # concept_id [Integer]
+    # metadata [Boolean]: Different data is returned when true; stuff like age restrictions, release dates in different countries etc..
+    def concept(concept_id, metadata: false)
+      options = {}
 
-			if metadata
-				options[:query] = {
-					country: country,
-					language: language,
-					age: age
-				}
-			end
+      if metadata
+        options[:query] = {
+          country: country,
+          language: language,
+          age: age
+        }
+      end
 
-			# https://m.np.playstation.net/api/catalog/v2/concepts/10000470
-			# https://m.np.playstation.net/api/catalog/v2/concepts/10000470?country=GB&language=en&age=999
-			get([path, 'concepts', concept_id].join('/'), options).parsed_response
-		end
+      # https://m.np.playstation.net/api/catalog/v2/concepts/10000470
+      # https://m.np.playstation.net/api/catalog/v2/concepts/10000470?country=GB&language=en&age=999
+      get([path, 'concepts', concept_id].join('/'), options).parsed_response
+    end
 
-		# concept_id [Integer]
-		# offset [Integer]
-		# limit [Integer] {
+    # concept_id [Integer]
+    # offset [Integer]
+    # limit [Integer] {
     #   min: 1,
     #   max: 1000
     # }
-		def products(concept_id, offset: 0, limit: 1000)
-			raise 'limit must be less than or equal to 1000' if limit > 1000
-			
-			# https://m.np.playstation.net/api/catalog/v2/concepts/10000470/products?country=GB&language=en&age=999&limit=1000
-			get([path, 'concepts', concept_id, 'products'].join('/'),
-				query: {
-					country: country,
-					language: language,
-					age: age,
-					limit: limit,
-					offset: offset
-				}
-			).parsed_response
-		end
+    def products(concept_id, offset: 0, limit: 1000)
+      raise 'limit must be less than or equal to 1000' if limit > 1000
+      
+      # https://m.np.playstation.net/api/catalog/v2/concepts/10000470/products?country=GB&language=en&age=999&limit=1000
+      get([path, 'concepts', concept_id, 'products'].join('/'),
+        query: {
+          country: country,
+          language: language,
+          age: age,
+          limit: limit,
+          offset: offset
+        }
+      ).parsed_response
+    end
 
-		# title_ids [Array[String]]
-		def title_ids_to_concept_id(title_ids)
-			raise 'limit must be less than or equal to 500' if title_ids.length > 500
+    # title_ids [Array[String]]
+    def title_ids_to_concept_id(title_ids)
+      raise 'limit must be less than or equal to 500' if title_ids.length > 500
 
-			# https://m.np.playstation.net/api/catalog/v2/titles/[..]/concepts/id
-			response = get([path, 'titles', title_ids, 'concepts', 'id'].join('/')).parsed_response
-			
-			return title_ids.length == 1 ? response[0] : response
-		end
+      # https://m.np.playstation.net/api/catalog/v2/titles/[..]/concepts/id
+      response = get([path, 'titles', title_ids, 'concepts', 'id'].join('/')).parsed_response
+      
+      return title_ids.length == 1 ? response[0] : response
+    end
 
-		# title_id [String]
-		def title(title_id)
-			# https://m.np.playstation.net/api/catalog/v2/titles/CUSA18182_00/?country=GB&language=en&age=999
-			get([path, 'title', title_id].join('/')).parsed_response
-		end
+    # title_id [String]
+    def title(title_id)
+      # https://m.np.playstation.net/api/catalog/v2/titles/CUSA18182_00/?country=GB&language=en&age=999
+      get([path, 'title', title_id].join('/')).parsed_response
+    end
 
-		# title_id [String]
-		def title_age_limit(title_id)
-			get([path, 'title', title_id, 'ageLimit'].join('/')).parsed_response
-		end
+    # title_id [String]
+    def title_age_limit(title_id)
+      get([path, 'title', title_id, 'ageLimit'].join('/')).parsed_response
+    end
 
-	private
+  private
 
-		def path
-			'/catalog/v2'.freeze
-		end
-	end
+    def path
+      '/catalog/v2'.freeze
+    end
+  end
 end
 
 # syncConcepts: function (t, n) {

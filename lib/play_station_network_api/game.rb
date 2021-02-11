@@ -1,15 +1,15 @@
 module PlayStationNetworkAPI
   class Game < Client
-		attr_accessor :account_id
+    attr_accessor :account_id
 
     # account_id [Integer]
-		def initialize(account_id = 'me')
-			@account_id = account_id
-		end
+    def initialize(account_id = 'me')
+      @account_id = account_id
+    end
 
     # @private false
-		# offset [Integer]
-		# limit [Integer] {
+    # offset [Integer]
+    # limit [Integer] {
     #   min: 1,
     #   max: 300
     # }
@@ -35,8 +35,8 @@ module PlayStationNetworkAPI
     # COMMENT: Pretty much the same endpoint as [titles], except it gives a lot less data and there's no conceptId information
     # 
     # @private false
-		# offset [Integer]
-		# limit [Integer] {
+    # offset [Integer]
+    # limit [Integer] {
     #   min: 1,
     #   max: 300
     # }

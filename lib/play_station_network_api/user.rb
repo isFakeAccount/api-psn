@@ -1,11 +1,11 @@
 module PlayStationNetworkAPI
   class User < Client
-		attr_accessor :account_id
+    attr_accessor :account_id
     
     # account_id [Integer]
-		def initialize(account_id = 'me')
-			@account_id = account_id
-		end
+    def initialize(account_id = 'me')
+      @account_id = account_id
+    end
   
     # @private true
     def self.account_id
@@ -15,14 +15,14 @@ module PlayStationNetworkAPI
 
     # @private false
     def profile
-		  # https://m.np.playstation.net/api/userProfile/v1/internal/users/6462910331343535058/profiles
+      # https://m.np.playstation.net/api/userProfile/v1/internal/users/6462910331343535058/profiles
       get([path, account_id, 'profiles'].join('/')).parsed_response
     end
 
     # @private false
     # account_ids [Array[Integer]]
     def profiles(account_ids)
-			raise 'account_ids size must be less than or equal to 100' if account_ids.length > 100
+      raise 'account_ids size must be less than or equal to 100' if account_ids.length > 100
 
       # https://m.np.playstation.net/api/userProfile/v1/internal/users/profiles?accountIds=6462910331343535058
       get([path, 'profiles'].join('/'),
@@ -45,7 +45,7 @@ module PlayStationNetworkAPI
     # @private false
     # account_ids [Array[Integer]]
     def presences(account_ids)
-			raise 'account_ids size must be less than or equal to 100' if account_ids.length > 100
+      raise 'account_ids size must be less than or equal to 100' if account_ids.length > 100
 
       # https://m.np.playstation.net/api/userProfile/v1/internal/users/me/basicPresences?type=primary
       get([path, 'basicPresences'].join('/'),
@@ -57,13 +57,13 @@ module PlayStationNetworkAPI
     end
 
     # @private false
-		# limit [Integer] {
+    # limit [Integer] {
     #   min: 1,
     #   max: 1000
     # }
     def friends(limit: 1000)
-			raise 'limit must be less than or equal to 1000' if limit > 1000
-			
+      raise 'limit must be less than or equal to 1000' if limit > 1000
+      
       # https://m.np.playstation.net/api/userProfile/v1/internal/users/me/friends?limit=1000
       get([path, account_id, 'friends'].join('/'),
         query: {
