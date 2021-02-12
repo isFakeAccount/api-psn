@@ -1,5 +1,3 @@
-require 'play_station_network_api/models/trophy'
-
 module PlayStationNetworkAPI
   class Catalog < PlayStationNetworkAPI::Client
 
