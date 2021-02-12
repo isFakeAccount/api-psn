@@ -1,11 +1,5 @@
 module PlayStationNetworkAPI
   class User < PlayStationNetworkAPI::Client
-  
-    # @private true
-    def account_id
-      # https://dms.api.playstation.com/api/v1/devices/accounts/me
-      HTTParty.get('https://dms.api.playstation.com/api/v1/devices/accounts/me').parsed_response
-    end
 
     # @private false
     def profile

@@ -31,7 +31,7 @@ module PlayStationNetworkAPI
       expiration_date < DateTime.now.to_s
     end
     
-  private
+  # private
 
     def oauth_authorize
       request = self.class.get('/authz/v3/oauth/authorize',

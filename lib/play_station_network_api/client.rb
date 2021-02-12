@@ -87,6 +87,21 @@ module PlayStationNetworkAPI
         language: language
       )
     end
+      
+    # @private true
+    def account_id
+      self.class.base_uri 'https://dms.api.playstation.com/api'
+
+      # https://dms.api.playstation.com/api/v1/devices/accounts/me
+      get('/v1/devices/accounts/me').parsed_response['accountId']
+    end
+
+    def account_devices
+      self.class.base_uri 'https://dms.api.playstation.com/api'
+
+      # https://dms.api.playstation.com/api/v1/devices/accounts/me
+      get('/v1/devices/accounts/me').parsed_response['accountDevices']
+    end
 
   protected
 
