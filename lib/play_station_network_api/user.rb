@@ -1,14 +1,8 @@
 module PlayStationNetworkAPI
-  class User < Client
-    attr_accessor :account_id
-    
-    # account_id [Integer]
-    def initialize(account_id = 'me')
-      @account_id = account_id
-    end
+  class User < PlayStationNetworkAPI::Client
   
     # @private true
-    def self.account_id
+    def account_id
       # https://dms.api.playstation.com/api/v1/devices/accounts/me
       HTTParty.get('https://dms.api.playstation.com/api/v1/devices/accounts/me').parsed_response
     end

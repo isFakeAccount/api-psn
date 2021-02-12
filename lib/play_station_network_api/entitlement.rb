@@ -1,5 +1,5 @@
 module PlayStationNetworkAPI
-  class Entitlement < Client
+  class Entitlement < PlayStationNetworkAPI::Client
 
     # offset [Integer]
     # limit [Integer] {

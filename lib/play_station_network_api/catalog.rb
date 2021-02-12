@@ -1,15 +1,7 @@
-module PlayStationNetworkAPI
-  class Catalog < Client
-    attr_accessor :country, :language, :age
+require 'play_station_network_api/models/trophy'
 
-    # country [String]
-    # language [String]
-    # age [Integer]
-    def initialize(country = 'GB', language = 'en', age = 999)
-      @country = country
-      @language = language
-      @age = age
-    end
+module PlayStationNetworkAPI
+  class Catalog < PlayStationNetworkAPI::Client
 
     # offset [Integer]
     # limit [Integer] {
@@ -25,7 +17,7 @@ module PlayStationNetworkAPI
         query: {
           country: country,
           language: language,
-          age: age,
+          age: 999,
           limit: limit,
           offset: offset
         }
@@ -41,7 +33,7 @@ module PlayStationNetworkAPI
         options[:query] = {
           country: country,
           language: language,
-          age: age
+          age: 999
         }
       end
 
@@ -56,7 +48,7 @@ module PlayStationNetworkAPI
     #   min: 1,
     #   max: 1000
     # }
-    def products(concept_id, offset: 0, limit: 1000)
+    def products(concept_id, offset: 0, limit: 10)
       raise 'limit must be less than or equal to 1000' if limit > 1000
       
       # https://m.np.playstation.net/api/catalog/v2/concepts/10000470/products?country=GB&language=en&age=999&limit=1000

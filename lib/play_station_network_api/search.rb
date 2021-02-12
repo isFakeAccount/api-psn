@@ -1,5 +1,5 @@
 module PlayStationNetworkAPI
-  class Search < Client
+  class Search < PlayStationNetworkAPI::Client
     
     # query [String]
     # limit [Integer] {
@@ -8,19 +8,19 @@ module PlayStationNetworkAPI
     # }
     # country_code [String]
     # language_code [String]
-    def initialize(query, limit: 50, offset: 0, country_code: 'US', language_code: 'en')
-      
-      # TODO: It seems to be a Java GraphQL pagination thingy, when present it breaks the offset.
-      # So let's leave it out for now as we don't really need to paginate
-      # "domainRequests.pagination.cursor": "10"
-
+    def query(query, offset: 0, limit: 50)
       # https://m.np.playstation.net/api/search/v1/universalSearch
-      request = post('/search/v1/universalSearch',
+      request = Client.new().post('/search/v1/universalSearch',
         body: {
           "domainRequests": [
             {
               "domain": "ConceptGameMobileApp",
               "pagination": {
+
+                # TODO: It seems to be a Java GraphQL pagination thingy, when present it breaks the offset.
+                # So let's leave it out for now as we don't really need to paginate
+                # "cursor": "10"
+
                 "pageSize": limit,
                 "offset": offset
               }

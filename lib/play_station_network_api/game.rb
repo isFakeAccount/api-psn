@@ -1,11 +1,5 @@
 module PlayStationNetworkAPI
-  class Game < Client
-    attr_accessor :account_id
-
-    # account_id [Integer]
-    def initialize(account_id = 'me')
-      @account_id = account_id
-    end
+  class Game < PlayStationNetworkAPI::Client
 
     # @private false
     # offset [Integer]
