@@ -7,10 +7,10 @@ module PlayStationNetworkAPI
     include HTTParty
     base_uri 'https://m.np.playstation.net/api'
 
-    attr_accessor :access_token, :default_headers, :account_id, :country, :language, :age
+    attr_accessor :refresh_token, :default_headers, :account_id, :country, :language, :age
 
     def initialize(refresh_token, account_id: 'me', country: 'GB', language: 'en')
-      @access_token = PlayStationNetworkAPI::Session.new(refresh_token).access_token
+      @refresh_token = refresh_token
       @default_headers = {
         # TODO: Make this a variable for other languages
         'Accept-Language' => 'en-US',
@@ -25,7 +25,7 @@ module PlayStationNetworkAPI
   public
 
     def catalog
-      PlayStationNetworkAPI::Catalog.new(access_token, 
+      PlayStationNetworkAPI::Catalog.new(refresh_token, 
         account_id: account_id, 
         country: country, 
         language: language
@@ -33,7 +33,7 @@ module PlayStationNetworkAPI
     end
 
     def entitlement
-      PlayStationNetworkAPI::Entitlement.new(access_token, 
+      PlayStationNetworkAPI::Entitlement.new(refresh_token, 
         account_id: account_id, 
         country: country, 
         language: language
@@ -41,7 +41,7 @@ module PlayStationNetworkAPI
     end
 
     def explore
-      PlayStationNetworkAPI::Explore.new(access_token, 
+      PlayStationNetworkAPI::Explore.new(refresh_token, 
         account_id: account_id, 
         country: country, 
         language: language
@@ -49,7 +49,7 @@ module PlayStationNetworkAPI
     end
 
     def game
-      PlayStationNetworkAPI::Game.new(access_token, 
+      PlayStationNetworkAPI::Game.new(refresh_token, 
         account_id: account_id, 
         country: country, 
         language: language
@@ -57,7 +57,7 @@ module PlayStationNetworkAPI
     end
 
     def search
-      PlayStationNetworkAPI::Search.new(access_token, 
+      PlayStationNetworkAPI::Search.new(refresh_token, 
         account_id: account_id, 
         country: country, 
         language: language
@@ -65,7 +65,7 @@ module PlayStationNetworkAPI
     end
 
     def session
-      PlayStationNetworkAPI::Session.new(access_token, 
+      PlayStationNetworkAPI::Session.new(refresh_token, 
         account_id: account_id, 
         country: country, 
         language: language
@@ -73,7 +73,7 @@ module PlayStationNetworkAPI
     end
 
     def trophy
-      PlayStationNetworkAPI::Trophy.new(access_token, 
+      PlayStationNetworkAPI::Trophy.new(refresh_token, 
         account_id: account_id, 
         country: country, 
         language: language
@@ -81,7 +81,7 @@ module PlayStationNetworkAPI
     end
 
     def user
-      PlayStationNetworkAPI::User.new(access_token, 
+      PlayStationNetworkAPI::User.new(refresh_token, 
         account_id: account_id, 
         country: country, 
         language: language
@@ -89,14 +89,14 @@ module PlayStationNetworkAPI
     end
       
     # @private true
-    def account_id
+    def get_account_id
       self.class.base_uri 'https://dms.api.playstation.com/api'
 
       # https://dms.api.playstation.com/api/v1/devices/accounts/me
       get('/v1/devices/accounts/me').parsed_response['accountId']
     end
 
-    def account_devices
+    def get_account_devices
       self.class.base_uri 'https://dms.api.playstation.com/api'
 
       # https://dms.api.playstation.com/api/v1/devices/accounts/me
@@ -106,6 +106,8 @@ module PlayStationNetworkAPI
   protected
 
     def get(url, options = {})
+      access_token = PlayStationNetworkAPI::Session.new(refresh_token).access_token
+
       headers = options[:headers] || {}
       options.delete(:headers)
 
