@@ -74,7 +74,7 @@ module PlayStationNetworkAPI
     end
 
     # @private true
-    # type [Symbol] [:received, :sent]
+    # type [Symbol] => :received, :sent
     def friend_requests(type: :received)
       # https://m.np.playstation.net/api/userProfile/v1/internal/users/me/friends/9014970682312518995/summary
       get([path, 'me', 'friends', "#{ type.to_s }Requests"].join('/')).parsed_response
@@ -99,54 +99,3 @@ module PlayStationNetworkAPI
     end
   end
 end
-
-# getFollowingConceptsInternal: function (n, t) {
-#   return { Access Denied
-#     endpoint:
-#       "/v1/internal/users/{accountId_or_me}/followings/concepts",
-#   };
-# },
-
-# getAvailabilitiesInternal: function (n, t) {
-#   return { Access Denied
-#     endpoint: "/v1/internal/users/{accountId_or_me}/availability",
-#   };
-# },
-
-# getMultiAvailabilitiesInternal: function (n, t) {
-#   return { Access Denied
-#     endpoint: "/v1/internal/users/availabilities",
-#   };
-# },
-
-# getDoNotDisturbSettingInternal: function (n, t) {
-#   return { Access Denied
-#     endpoint: "/v1/internal/users/me/userSettings/doNotDisturb",
-#   };
-# },
-
-# getBusySettingInternal: function (n, t) {
-#   return { Works but useless
-#     endpoint: "/v1/internal/users/me/userSettings/busy",
-#   };
-# },
-
-# getAppearOfflineSettingInternal: function (n, t) {
-#   return { Works but useless
-#     endpoint: "/v1/internal/users/me/userSettings/appearOffline",
-#   };
-# },
-
-# getReceivedRequestPersonalDetailsInternal: function (n, t) {
-#   return { Works but requires some additional params, I think. Needs more info
-#     endpoint:
-#       "/v1/internal/users/me/friends/receivedRequests/personalDetails",
-#   };
-# },
-
-# getFriendsPlayingThisGameInternal: function (n, t) {
-#   return { Access Denied
-#     endpoint:
-#       "/v1/internal/users/me/playingFriends/concepts/{conceptId}",
-#   };
-# },

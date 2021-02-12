@@ -1,12 +1,18 @@
 module PlayStationNetworkAPI
   class Trophy < PlayStationNetworkAPI::Client
+    
     def summary
       # https://m.np.playstation.net/api/trophy/v1/users/6462910331343535058/trophySummary
       get([path, 'trophySummary'].join('/')).parsed_response
     end
 
-    # titles [Array<String>]
-    def titles(title_ids = [], limit: 10, offset: 0)
+    # titles [Array[String]]
+    # offset [Integer]
+    # limit [Integer] {
+    #   min: 1,
+    #   max: 1000
+    # }
+    def titles(title_ids = [], offset: 0, limit: 10)
       raise 'title_ids size must be less than or equal to 5' if title_ids.length > 5
       raise 'limit must be less than or equal to 5000' if limit > 5000
 
@@ -45,8 +51,7 @@ module PlayStationNetworkAPI
     end
 
     # communication_id [String]
-    # trophy_group_id [String] => default
-    # trophy_group_id [Number] => 001, 002
+    # trophy_group_id [String | Integer] => 'default', '001', 002
     def trophies(communication_id, trophy_group_id = nil)
       # https://m.np.playstation.net/api/trophy/v1/users/6462910331343535058/npCommunicationIds/NPWR00133_00/trophies?npServiceName=trophy
       # https://m.np.playstation.net/api/trophy/v1/users/6462910331343535058/npCommunicationIds/NPWR00133_00/trophyGroups/default/trophies?npServiceName=trophy
@@ -57,7 +62,8 @@ module PlayStationNetworkAPI
       ).parsed_response
     end
 
-    # trophy_id [Number]
+    # communication_id [String]
+    # trophy_id [Integer]
     def trophy_details(communication_id, trophy_id)
       url = if account_id
         # https://m.np.playstation.net/api/trophy/v1/npCommunicationIds/NPWR00133_00/trophies/2?npServiceName=trophy
