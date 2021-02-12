@@ -2,7 +2,7 @@ require 'httparty'
 
 module PlayStationNetworkAPI
   class Client
-    VERSION ||= '2.0'
+    VERSION ||= '2.1'
   
     include HTTParty
     base_uri 'https://m.np.playstation.net/api'
@@ -117,6 +117,9 @@ module PlayStationNetworkAPI
   private
 
     def self.changelog
+      # v2.1
+      # Add new CloudAssistedNavigation, GamingLoungeGroup, RemoteDownloadList and SessionManager endpoints
+      
       # v2.0
       # Implemented the new API that's currently present in the new PlayStation App.
       # There are quite a few endpoints that currently return Access Denied, which probably means they're not active yet
