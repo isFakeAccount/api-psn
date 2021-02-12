@@ -5,26 +5,38 @@ module PlayStationNetworkAPI
 
     DEFAULT_SCOPES ||= ['psn:clientapp', 'psn:mobile.v1'].join(' ').freeze
     CLIENT_ID ||= 'ac8d161a-d966-4728-b0ea-ffec22f69edc'.freeze
-
-    def refresh(refresh_token)
-      oauth_token(refresh_token, refresh: true)
+    
+    attr_accessor :token
+    
+    def initialize(token)
+      @token = token
     end
 
-    def authenticate(npsso)
-      code, cid = oauth_authorize(npsso)
+    def authenticate
+      code, cid = oauth_authorize
       oauth_token(code)
     end
-    
-    def access_token(refresh_token)
-      refresh(refresh_token)['access_token']
+
+    alias_method :refresh, :authenticate
+
+    def access_token
+      oauth_token['access_token']
     end
 
+    def expiration_date
+      (Time.now + oauth_token['refresh_token_expires_in']).to_datetime.to_s
+    end
+
+    def expired?
+      expiration_date < DateTime.now.to_s
+    end
+    
   private
 
-    def oauth_authorize(npsso)
+    def oauth_authorize
       request = self.class.get('/authz/v3/oauth/authorize',
         headers: {
-          'Cookie' => HTTParty::CookieHash.new().add_cookies({ npsso: npsso }).to_cookie_string
+          'Cookie' => HTTParty::CookieHash.new().add_cookies({ npsso: token }).to_cookie_string
         },
 
         query: {
@@ -46,22 +58,22 @@ module PlayStationNetworkAPI
       end
     end
 
-    def oauth_token(code, refresh: false)
+    def oauth_token(code = nil)
       body = {}
 
-      if refresh
-        body = {
-          'refresh_token' => code,
-          'grant_type' => 'refresh_token'
-        }
-      else
+      if code
         body = {
           'code' => code,
           'grant_type' => 'authorization_code',
           'redirect_uri' => 'com.playstation.PlayStationApp://redirect'
         }
+      else
+        body = {
+          'refresh_token' => token,
+          'grant_type' => 'refresh_token'
+        }
       end
-
+      
       self.class.post('/authz/v3/oauth/token',
         headers: {
           'Authorization' => 'Basic YWM4ZDE2MWEtZDk2Ni00NzI4LWIwZWEtZmZlYzIyZjY5ZWRjOkRFaXhFcVhYQ2RYZHdqMHY='

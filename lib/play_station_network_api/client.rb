@@ -9,8 +9,8 @@ module PlayStationNetworkAPI
 
     attr_accessor :access_token, :default_headers, :account_id, :country, :language, :age
 
-    def initialize(access_token, account_id: 'me', country: 'GB', language: 'en')
-      @access_token = access_token
+    def initialize(refresh_token, account_id: 'me', country: 'GB', language: 'en')
+      @access_token = PlayStationNetworkAPI::Session.new(refresh_token).access_token
       @default_headers = {
         # TODO: Make this a variable for other languages
         'Accept-Language' => 'en-US',
