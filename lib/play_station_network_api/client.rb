@@ -107,9 +107,14 @@ module PlayStationNetworkAPI
 
     def get(url, options = {})
       access_token = PlayStationNetworkAPI::Session.new(refresh_token).access_token
+      
+      base_uri = options[:base_uri]
+      options.delete(:base_uri)
 
       headers = options[:headers] || {}
       options.delete(:headers)
+
+      self.class.base_uri base_uri if base_uri
 
       self.class.get(url,
         headers: {

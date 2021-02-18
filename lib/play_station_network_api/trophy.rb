@@ -1,12 +1,13 @@
 module PlayStationNetworkAPI
   class Trophy < PlayStationNetworkAPI::Client
+    # TODO: Test against PS5 titles, using 'trophy2' as the npServiceName
     
     def summary
       # https://m.np.playstation.net/api/trophy/v1/users/6462910331343535058/trophySummary
       get([path, 'trophySummary'].join('/')).parsed_response
     end
 
-    # titles [Array[String]]
+    # title_ids [Array[String]]
     # offset [Integer]
     # limit [Integer] {
     #   min: 1,
@@ -18,7 +19,12 @@ module PlayStationNetworkAPI
 
       if title_ids.empty?
         # https://m.np.playstation.net/api/trophy/v1/users/6462910331343535058/trophyTitles
-        get([path, 'trophyTitles'].join('/')).parsed_response
+        get([path, 'trophyTitles'].join('/'),
+          query: {
+            offset: offset,
+            limit: limit
+          }
+        ).parsed_response
         
         # TODO: Cast every response to a Model
         # return PlayStationNetworkAPI::Models::Trophy.new(request.parsed_response)
@@ -53,7 +59,7 @@ module PlayStationNetworkAPI
     # communication_id [String]
     # trophy_group_id [String | Integer] => 'default', '001', 002
     def trophies(communication_id, trophy_group_id = nil)
-      # https://m.np.playstation.net/api/trophy/v1/users/6462910331343535058/npCommunicationIds/NPWR00133_00/trophies?npServiceName=trophy
+      # BROKEN: https://m.np.playstation.net/api/trophy/v1/users/6462910331343535058/npCommunicationIds/NPWR00133_00/trophies?npServiceName=trophy
       # https://m.np.playstation.net/api/trophy/v1/users/6462910331343535058/npCommunicationIds/NPWR00133_00/trophyGroups/default/trophies?npServiceName=trophy
       get([path, 'npCommunicationIds', communication_id, 'trophyGroups', ([trophy_group_id, 'trophies'] if trophy_group_id)].flatten.compact.join('/'),
         query: {
@@ -77,6 +83,18 @@ module PlayStationNetworkAPI
         query: {
           npServiceName: 'trophy'
         }
+      ).parsed_response
+    end
+
+    # title_ids Array[[String]]
+    def get_communication_id(title_ids = [])
+      # https://gb-tpy.np.community.playstation.net/trophy/v1/apps/trophyTitles?npTitleIds=CUSA15010_00,CUSA20046_00,CUSA24894_00,CUSA24269_00,CUSA24267_00
+      get('/trophy/v1/apps/trophyTitles',
+        base_uri: 'https://gb-tpy.np.community.playstation.net',
+        query: {
+          npTitleIds: title_ids.join(',')
+        },
+        
       ).parsed_response
     end
 

@@ -1,3 +1,5 @@
+require 'httparty'
+
 module PlayStationNetworkAPI
   class Session
     include HTTParty

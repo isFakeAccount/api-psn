@@ -1,10 +1,10 @@
 # coding: utf-8
 
-require './lib/play_station_network_api/client'
+# require './lib/play_station_network_api/client'
 
 Gem::Specification.new do |spec|
   spec.name          = 'psn-api'
-  spec.version       = PlayStationNetworkAPI::Client::VERSION
+  spec.version       = '2.0'#PlayStationNetworkAPI::Client::VERSION
   spec.authors       = ['Vlad Radulescu']
   spec.email         = ['oss@games.directory']
 
