@@ -127,10 +127,13 @@ module PlayStationNetworkAPI
     end
 
     def post(url, options = {})
-      self.class.post(url, 
+      access_token = PlayStationNetworkAPI::Session.new(refresh_token).access_token
+      
+      self.class.post(url,
         headers: {
           **default_headers,
-          'Content-Type' => 'application/json'
+          'Content-Type' => 'application/json',
+          'Authorization' => "Bearer #{ access_token }"
         },
         **options
       )
