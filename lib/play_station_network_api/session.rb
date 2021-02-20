@@ -78,6 +78,8 @@ module PlayStationNetworkAPI
       
       self.class.post('/authz/v3/oauth/token',
         headers: {
+          'Host' => 'ca.account.sony.com',
+          'Referer' =>  'https://my.playstation.com/',
           'Authorization' => 'Basic YWM4ZDE2MWEtZDk2Ni00NzI4LWIwZWEtZmZlYzIyZjY5ZWRjOkRFaXhFcVhYQ2RYZHdqMHY='
         },
 
